@@ -1,0 +1,9 @@
+﻿题目链接：https://vjudge.net/contest/388357#overview
+真的太菜，太垃圾了。
+理所当然的倒数第一。
+哎~
+A match points是真的不会 AC
+C 据说是线段树？没有看题 RE
+E array shrinking 一点思路也没有，NO
+F ticket game哎，类似博弈的题还是不会 AC
+J ……ans<=1e8……就吓我吧，怪不得做出来这么多，啊啊啊啊啊 AC
