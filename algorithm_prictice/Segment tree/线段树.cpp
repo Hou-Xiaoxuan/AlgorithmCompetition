@@ -96,7 +96,7 @@ void pushdown(int nod, int l, int r)
 		int mid = l + r >> 1;
 		tree[nod << 1] += cov[nod] * (mid - l + 1);
 		tree[nod << 1 | 1] = cov[nod] * (r - mid);
-		cov[nod << 1] = cov[nod << 1 | 1] += cov[nod];
+		cov[nod << 1] = cov[nod << 1 | 1] += cov[nod]; // TODO: err
 		cov[nod] = 0;
 	}
 }
