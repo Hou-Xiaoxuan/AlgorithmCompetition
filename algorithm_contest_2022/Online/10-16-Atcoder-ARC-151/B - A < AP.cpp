@@ -1,7 +1,9 @@
 #ifndef _USE_MATH_DEFINES
  #define _USE_MATH_DEFINES
 #endif
-#include <bits/stdc++.h>
+// #include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
 #define IOS                   \
  ios::sync_with_stdio(false); \
  cin.tie(0);                  \
@@ -13,84 +15,74 @@ using LL = long long;
 using ULL = unsigned long long;
 using LD = long double;
 using P = pair<int, int>;
-const int inf = 0x3f3f3f3f;
-const LL LLinf = 0x3f3f3f3f3f3f3f3f;
-class TreeArray
+
+// 并查集 类
+class UnionFind
 {
-    vector<int> c;
-    int n;
-    int lowbit(int x) { return x & (-x); }
+    vector<int> fa;
+    int groups;
 
 public:
-    TreeArray(int n) : n(n) { c.resize(n + 1); }
-    void init(vector<int> &a)
+    UnionFind(int n) : fa(n), groups(n)
     {
-        n = a.size();
-        c.resize(n + 1);
         for (int i = 0; i < n; i++)
-            add(i, a[i]);
+            fa[i] = i;
     }
-    void add(int x, int v)
+    int find(int x) { return x == fa[x] ? x : fa[x] = find(fa[x]); }
+    void unite(int x, int y)
     {
-        for (int i = x; i <= n; i += lowbit(i))
-            c[i] += v;
+        int fx = find(x), fy = find(y);
+        if (fx != fy)
+        {
+            fa[fx] = fy;
+            groups--;
+        }
     }
-    int sum(int x)
-    {
-        int res = 0;
-        for (int i = x; i > 0; i -= lowbit(i))
-            res += c[i];
-        return res;
-    }
+    inline int getGroups() { return groups; }
 };
+
 // 快速幂
-LL qpow(LL a, LL b, LL mod)
+LL qmod(LL a, LL b, LL mod)
 {
-    LL res = 1;
+    LL ans = 1;
     while (b)
     {
         if (b & 1)
-            res = res * a % mod;
+            ans = ans * a % mod;
         a = a * a % mod;
-        b = b >> 1;
+        b >>= 1;
     }
-    return res;
+    return ans;
 }
-LL get_value(LL x, LL mod)
-{
-    static vector<long long> cach;
-    if (cach.empty())
-    {
-        cach = vector<long long>(2e5 + 5, 0);
-        cach[0] = 1;
-        for (size_t i = 1; i < cach.size(); i++)
-        {
-            cach[i] = cach[i - 1] * i % mod;
-        }
-    }
-    return cach[x];
-};
 int main(int argc, char const *argv[])
 {
+#ifdef _DEBUG
+    freopen("input", "r", stdin);
+#endif
     int n, m;
     cin >> n >> m;
     vector<int> a(n);
     for (auto &i : a)
+    {
         cin >> i;
+        i--;
+    }
+
     long long ans = 0u;
-    long long mod = 998244353;
+    const long long mod = 998244353;
 
-
-    TreeArray tree(m + 5);
-    auto get_A = [&](int a, int b) -> long long {
-        // return 排列数 A(a, b)
-        return get_value(a, mod) * qpow(get_value(a - b, mod), mod - 2, mod) % mod;
-    };
+    UnionFind uf(n);
     for (int i = 0; i < n; i++)
     {
-        int cnt = tree.sum(a[i]);
-        ans += cnt * get_A(m - i - 1, n - i - 1) % mod;
-        tree.add(a[i], 1);
+        if (uf.find(i) == uf.find(a[i]))
+            continue;
+        // b[i] < b[a[i]], 这两个特殊选择，i之前的组合相等
+        int times = uf.getGroups() - 2;
+        // A(m, 2)/2*m^times%mod
+        // SB, m类型int， (m-1)*m/2就炸了
+        ans += (m - 1ll) * m / 2ll % mod * qmod(m, times, mod) % mod;
+        ans%=mod;
+        uf.unite(i, a[i]);
     }
     cout << ans << endl;
     return 0;
