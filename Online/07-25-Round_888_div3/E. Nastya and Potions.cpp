@@ -15,7 +15,9 @@ using LD = long double;
 using P = pair<int, int>;
 const int inf = 0x3f3f3f3f;
 const LL LLinf = 0x3f3f3f3f3f3f3f3f;
-
+/* 做复杂了。两个cost是没有必要的。
+*  逻辑上，不应该子节点去更新父节点，只要拓扑序遍历一遍就可以了。
+*/
 int main()
 {
     IOS;
