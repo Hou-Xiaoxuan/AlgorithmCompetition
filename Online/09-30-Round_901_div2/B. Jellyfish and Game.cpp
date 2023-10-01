@@ -35,12 +35,9 @@ int main()
             cin >> a[i];
         for (int j = 1; j <= m; j++)
             cin >> b[j];
-        int min_a = *min_element(a.begin() + 1, a.end());
-        int min_b = *min_element(b.begin() + 1, b.end());
-        int max_a = *max_element(a.begin() + 1, a.end());
-        int max_b = *max_element(b.begin() + 1, b.end());
-        LL sum_a = accumulate(a.begin() + 1, a.end(), 0ll);
-        LL sum_b = accumulate(b.begin() + 1, b.end(), 0ll);
+        auto min_a = min_element(a.begin() + 1, a.end());
+        auto max_b = max_element(b.begin() + 1, b.end());
+
 
         /*
             1. min belong to a, max belong to b，交换这俩踢皮球
@@ -49,34 +46,17 @@ int main()
             4. min and max belong to b: 交换一轮后，对对方来说属于2
         */
 
-        // if (min_a <= min_b && max_b >= max_a)
-        // {
-        //     if (k & 1)    // 最大在自己，最小归对方
-        //         cout << sum_a + max(-min_a + max_b, 0) << endl;
-        //     else    // 最小归自己，最大归对方，没有变化
-        //         cout << sum_a << endl;
-        // }
-        // else if (max_a >= max_b && min_b <= min_a)
-        // {
-        //     if (k & 1)    // 交换一轮后保持不变
-        //         cout << sum_a + max(-min_a + max_b, 0) << endl;
-        //     else    // 交换一轮后，最小归自己，最大归对方
-        //         cout << sum_a + max(-min_a + max_b, 0) - max_a + min_b << endl;
-        // }
-        // else if (min_a <= min_b and max_a >= max_b)
-        // {
-        //     if (k & 1)    // 交换一轮后，保持不变
-        //         cout << sum_a + max(-min_a + max_b, 0) << endl;
-        //     else    // 交换一轮后，最小归自己，最大归对方
-        //         cout << sum_a + max(-min_a + max_b, 0) - max_a + min_a << endl;
-        // }
-        // else if (min_b <= min_a and max_b >= max_a)
-        // {
-        //     if (k & 1)    // 交换一轮后，保持不变
-        //         cout << sum_a + max(-min_a + max_b, 0);
-        //     else
-        //         cout << sum_a + min_b - min_a;    // 自己拿全局最小
-        // }
+        // tutorial: 他们就是固定交换策略的，用自己最小的去交换对方最大的。随意只需要判断第一次是否交换就可以了。
+        if (*min_a < *max_b)    // 第一轮jelly交换
+            // swap(*min_a, *max_b);
+            iter_swap(min_a, max_b);
+        if (not(k & 1))
+        {    // 对方能交换回去
+            auto min_b = min_element(b.begin() + 1, b.end());
+            auto max_a = max_element(a.begin() + 1, a.end());
+            swap(*min_b, *max_a);
+        }
+        cout << accumulate(a.begin() + 1, a.end(), 0ll) << endl;
     }
 
     return 0;
